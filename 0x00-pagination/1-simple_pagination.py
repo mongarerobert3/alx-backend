@@ -10,6 +10,7 @@ def index_range(page: int, page_size: int) -> tuple:
     index_tuple = page_size * (page - 1), page * page_size
     return index_tuple
 
+
 class Server:
     """Server class to paginate a database of popular baby names.
     """
@@ -36,7 +37,7 @@ class Server:
         assert type(page_size) is int and page_size > 0
 
         indexes = index_range(page, page_size)
-        try: 
+        try:
             data = self.dataset()
             return data[indexes[0]: indexes[1]]
         except IndexError:
