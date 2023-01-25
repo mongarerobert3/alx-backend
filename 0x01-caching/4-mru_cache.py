@@ -1,40 +1,39 @@
 #!/usr/bin/env python3
-""" BaseCaching module
+"""Most Recently Used caching module.
 """
+from collections import OrderedDict
+
 from base_caching import BaseCaching
 
 
-class BasicCache(BaseCaching):
+class MRUCache(BaseCaching):
+    """Represents an object that allows storing and
+    retrieving items from a dictionary with an MRU
+    removal mechanism when the limit is reached.
     """
-    Defines a class for caching information in key-value pairs
-    Methods:
-        put(key, item) - store a key-value pair
-        get(key) - retrieve the value associated with a key
-    """
-
     def __init__(self):
+        """Initializes the cache.
         """
-        Initialize the class using the parent class __init__ method
-        """
-        BaseCaching.__init__(self)
+        super().__init__()
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
-        """
-        Store a key-value pair
-        Args:
-            Key
-            Item
+        """Adds an item in the cache.
         """
         if key is None or item is None:
-            pass
+            return
+        if key not in self.cache_data:
+            if len(self.cache_data) + 1 > BaseCaching.MAX_ITEMS:
+                mru_key, _ = self.cache_data.popitem(False)
+                print("DISCARD:", mru_key)
+            self.cache_data[key] = item
+            self.cache_data.move_to_end(key, last=False)
         else:
             self.cache_data[key] = item
 
     def get(self, key):
+        """Retrieves an item by key.
         """
-        Return value linked to key.
-        If key is None or doesn't exist, return None
-        """
-        if key is not None and key in self.cache_data.keys():
-            return self.cache_data[key]
-        return None
+        if key is not None and key in self.cache_data:
+            self.cache_data.move_to_end(key, last=False)
+        return self.cache_data.get(key, None)
