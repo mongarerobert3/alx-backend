@@ -1,4 +1,4 @@
-import express fom 'express';
+import express fom "express";
 import redis from 'redis';
 import { promisify } from 'util';
 const client = redis.createClient();
